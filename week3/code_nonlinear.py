@@ -154,6 +154,8 @@ def square_transform(X):
     Xt = X
 
     ### YOUR CODE HERE 2-4 lines
+    Xt = Xt == 2
+    # Xt = [x... for x in X]
     ### END CODE 
     
     return Xt
@@ -227,6 +229,12 @@ def plot_data():
     fig, axes = plt.subplots(1, 4, figsize=(20, 20))
     
     ### YOUR CODE 
+    for i in range(4):
+        X = D['X{}'.format(i+1)]
+        y = D['y{}'.format(i+1)]
+        ax = axes[i]
+        ax.set_title('Data Set {}'.format(i+1))
+        ax.scatter(X[:,0], X[:,1], c=y, cmap=plt.cm.Paired, s=20)
     ### END CODE
     plt.show()
 
