@@ -14,6 +14,8 @@ def logistic(z):
     """
     logi = np.zeros(z.shape)
     ### YOUR CODE HERE 1-5 lines
+    for i in range(len(z)):
+        logi[i] = 1 / (1 + np.exp(-z[i]))
     ### END CODE
     assert logi.shape == z.shape
     return logi
@@ -146,7 +148,7 @@ def test_grad():
     
 if __name__ == '__main__':
     test_logistic()
-    test_cost()
-    test_grad()
+    #test_cost()
+    #test_grad()
     
     
