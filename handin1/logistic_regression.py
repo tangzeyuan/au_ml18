@@ -14,8 +14,7 @@ def logistic(z):
     """
     logi = np.zeros(z.shape)
     ### YOUR CODE HERE 1-5 lines
-    for i in range(len(z)):
-        logi[i] = 1 / (1 + np.exp(-z[i]))
+    logi = 1/(1+np.exp(-z))
     ### END CODE
     assert logi.shape == z.shape
     return logi
@@ -44,6 +43,8 @@ class LogisticRegressionClassifier():
         cost = 0
         grad = np.zeros(w.shape)
         ### YOUR CODE HERE 5 - 15 lines
+        cost = y @ np.log(logistic(w @ X.T)) - (1 - y) @ np.log(1 - logistic(w @ X.T))
+        grad = -X.T @ (y - logistic(X @ w))
         ### END CODE
         assert grad.shape == w.shape
         return cost, grad
@@ -73,6 +74,17 @@ class LogisticRegressionClassifier():
         if w is None: w = np.zeros(X.shape[1])
         history = []        
         ### YOUR CODE HERE 14 - 20 lines
+        for i in range(epochs):
+            print('epochs {} j {}'.format(i, int(X.shape[0]/batch_size)))
+            random_indices = np.random.permutation(X.shape[0])
+            X, y = X[random_indices], y[random_indices]
+            for j in range(int(X.shape[0]/batch_size) - 1):
+                Xj = X[j*batch_size:(j+1)*batch_size]
+                yj = y[j*batch_size:(j+1)*batch_size]
+                loss = (Xj.T @ Xj @ w - Xj.T @ yj) * 2 / batch_size
+                w = w - lr * loss
+            cost, grad = self.cost_grad(X, y, w)
+            history.append(cost)
         ### END CODE
         self.w = w
         self.history = history
@@ -90,6 +102,8 @@ class LogisticRegressionClassifier():
         """
         pred = np.zeros(X.shape[0])
         ### YOUR CODE HERE 1 - 4 lines
+        pred = logistic(X @ self.w)
+        out = pred > 0.5
         ### END CODE
         return out
     
@@ -106,6 +120,8 @@ class LogisticRegressionClassifier():
         """
         s = 0
         ### YOUR CODE HERE 1 - 4 lines
+        h = self.predict(X)
+        s = (h == y).mean()
         ### END CODE
         return s
         
@@ -148,7 +164,7 @@ def test_grad():
     
 if __name__ == '__main__':
     test_logistic()
-    #test_cost()
-    #test_grad()
+    test_cost()
+    test_grad()
     
     

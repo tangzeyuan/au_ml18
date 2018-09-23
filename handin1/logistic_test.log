@@ -1,0 +1,57 @@
+C:\Users\zeyua\Github\au_ml18\handin1>python logistic_test.py -lr 0.1 -bs 16 -epochs 50
+vars args {'lr': 0.1, 'batch_size': 16, 'epochs': 50}
+epochs 0 j 338
+epochs 1 j 338
+epochs 2 j 338
+epochs 3 j 338
+C:\Users\zeyua\Github\au_ml18\handin1\logistic_regression.py:46: RuntimeWarning: divide by zero encountered in log
+  cost = y @ np.log(logistic(w @ X.T)) - (1 - y) @ np.log(1 - logistic(w @ X.T))
+epochs 4 j 338
+epochs 5 j 338
+epochs 6 j 338
+epochs 7 j 338
+epochs 8 j 338
+epochs 9 j 338
+epochs 10 j 338
+epochs 11 j 338
+epochs 12 j 338
+epochs 13 j 338
+epochs 14 j 338
+epochs 15 j 338
+epochs 16 j 338
+epochs 17 j 338
+epochs 18 j 338
+epochs 19 j 338
+epochs 20 j 338
+epochs 21 j 338
+epochs 22 j 338
+epochs 23 j 338
+epochs 24 j 338
+epochs 25 j 338
+epochs 26 j 338
+epochs 27 j 338
+epochs 28 j 338
+epochs 29 j 338
+epochs 30 j 338
+epochs 31 j 338
+epochs 32 j 338
+epochs 33 j 338
+epochs 34 j 338
+epochs 35 j 338
+epochs 36 j 338
+epochs 37 j 338
+epochs 38 j 338
+epochs 39 j 338
+epochs 40 j 338
+epochs 41 j 338
+epochs 42 j 338
+epochs 43 j 338
+epochs 44 j 338
+epochs 45 j 338
+epochs 46 j 338
+epochs 47 j 338
+epochs 48 j 338
+epochs 49 j 338
+Logistic Regression Industri Codes Classifier
+In Sample Score:  0.49685767097966727
+Test Score:  0.48337028824833705
