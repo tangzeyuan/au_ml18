@@ -1,0 +1,29 @@
+Feedback to Learner
+02/10/18 17:11
+
+Logistic Regression:
+
+Your implementation is correct - good job! And nice use of numpy functionalities.
+
+For the theory questions, your running time is correct.
+
+For question 2, your answer is not correct. 
+Logistic regression does not care about the ordering of the dimensions, 
+and will in fact not find inter-dimension features, such as the distance between nose and eyes, on its own. 
+All it does is weight each dimension independently, and sum them up when we compute w^T x. 
+So learning on a permuted input essentially just corresponds to permuting the weights as well.
+
+Your answer to question 3 is correct. But you should also consider when sigmoid = 1, when x belongs to class 1.
+
+
+
+Softmax:
+
+Your cost does not look correct. You are at least missing a call to softmax somewhere. 
+You should compute softmax on WX_i, and pick the column corresponding to y_i, take the log and sum them up. 
+A possible solution is 
+
+cost = -1 / n * np.sum(Yk * (np.log(softmax(X.dot(W)))))
+Otherwise, you solution is correct.
+
+Your argument for the running time is correct.
