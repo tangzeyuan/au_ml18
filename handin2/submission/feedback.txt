@@ -1,0 +1,10 @@
+Feedback to Learner
+30/10/18 11:04
+
+Correct derivation of the derivative.
+
+Your implementation is also correct, and nicely implemented. 
+To get a less noisy loss graph, 
+you might consider computing the loss at the end of each epoch for all the data with the reg parameter set to 0.
+
+Overall a very good handin!

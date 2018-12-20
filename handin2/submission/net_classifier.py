@@ -1,4 +1,5 @@
 import numpy as np
+from timeit import default_timer as dt
 
 def one_in_k_encoding(vec, k):
     """ One-in-k encoding of vector to k classes 
@@ -36,10 +37,10 @@ def softmax(X):
     Returns:
         res: numpy array shape (n, d)  where each row is the softmax transformation of the corresponding row in X i.e res[i, :] = softmax(X[i, :])
     """
-    res = np.zeros(X.shape)
-    ### YOUR CODE HERE no for loops please
-    ### END CODE
-    return res
+    xmax = np.max(X, axis=1)
+    return np.exp(X-(np.log(np.sum(np.exp(X-xmax[:, np.newaxis]), axis=1))+xmax)[:, np.newaxis])
+
+
 
 def relu(x):
     """ Compute the relu activation function on every element of the input
@@ -50,9 +51,7 @@ def relu(x):
             res: np.array same shape as x
         Beware of np.max and look at np.maximum
     """
-    ### YOUR CODE HERE
-    ### END CODE
-    return res
+    return np.maximum(0, x)
 
 def make_dict(W1, b1, W2, b2):
     """ Trivial helper function """
@@ -96,11 +95,7 @@ class NetClassifier():
             params = self.params
         pred = None
         ### YOUR CODE HERE
-        W1 = params['W1']
-        b1 = params['b1']
-        W2 = params['W2']
-        b2 = params['b2']
-        pred = relu(relu(X @ W1 + b1) @ W2 + b2)
+        pred = np.argmax(relu(X@params['W1']+params['b1']) @ params['W2'] + params['b2'], axis=1)
         ### END CODE
         return pred
      
@@ -117,10 +112,8 @@ class NetClassifier():
         """
         if params is None:
             params = self.params
-        acc = None
         ### YOUR CODE HERE
-        predict = self.predict(X, params)
-        acc = (predict == y).mean()
+        acc = np.mean(self.predict(X, params=params)==y)
         ### END CODE
         return acc
     
@@ -148,24 +141,53 @@ class NetClassifier():
             d_b2: np.array shape b2.shape, entry d_b2[1, j] = \partial cost/ \partial b2[1, j]
             
         """
+
         
         W1 = params['W1']
         b1 = params['b1']
         W2 = params['W2']
         b2 = params['b2']
-        labels = one_in_k_encoding(y, W2.shape[1]) # shape n x k
-                        
-        ### YOUR CODE HERE - FORWARD PASS - compute regularized cost and store relevant values for backprop
-        w1sqrt = W1 ** 2
-        w2sqrt = W2 ** 2
-        w1w2 = w1sqrt + w2sqrt
-        w1w2_wight = w1w2 * reg
-        ### END CODE
-        
+
+        n, d = X.shape
+        h, k = W2.shape
+
+        labels = one_in_k_encoding(y, k) # shape n x k
+
+        # Forward pass:
+        a1 = X @ W1 + b1
+        h1 = relu(a1)
+        a2 = h1 @ W2 + b2
+        C = np.sum(np.sum(-labels*np.log(softmax(a2)), axis=1))
+    
         ### YOUR CODE HERE - BACKWARDS PASS - compute derivatives of all (regularized) weights and bias, store them in d_w1, d_w2' d_w2, d_b1, d_b2
+        d_w1 = np.zeros_like(W1)
+        d_w2 = np.zeros_like(W2)
+        d_b1 = np.zeros_like(b1)
+        d_b2 = np.zeros_like(b2)
+
+        g2 = -labels + softmax(a2)
+        d_b2 += np.sum(g2, axis=0)
+        d_w2 += h1.T @ g2
+        g1 = (W2 @ g2.T).T * (a1 > 0)
+        d_b1 += np.sum(g1, axis=0)
+        d_w1 += X.T @ g1
+        
+
+        norm = True
+        if norm:
+            C /= n
+            d_b1 /= n
+            d_w1 /= n
+            d_w2 /= n
+            d_b2 /= n
+
+        C += reg*np.sum(W1**2)+reg*np.sum(W2**2)    
+        d_w1 += 2*reg*W1
+        d_w2 += 2*reg*W2
+
         ### END CODE
         # the return signature
-        return None, {'d_w1': None, 'd_w2': None, 'd_b1': None, 'd_b2': None}
+        return C, {'d_w1': d_w1, 'd_w2': d_w2, 'd_b1': d_b1, 'd_b2': d_b2}
         
     def fit(self, X_train, y_train, X_val, y_val, init_params, batch_size=32, lr=0.1, reg=1e-4, epochs=30):
         """ Run Mini-Batch Gradient Descent on data X, Y to minimize the in sample error (1/n)Cross Entropy for Neural Net classification
@@ -184,24 +206,58 @@ class NetClassifier():
         Sets: 
            params: dict with keys {W1, W2, b1, b2} parameters for neural net
            history: dict:{keys: train_loss, train_acc, val_loss, val_acc} each an np.array of size epochs of the the given cost after every epoch
-        """
-        
-        W1 = init_params['W1']
-        b1 = init_params['b1']
-        W2 = init_params['W2']
-        b2 = init_params['b2']
+        """        
+        params = init_params
+        train_acc = np.zeros(epochs)
+        train_loss = np.zeros(epochs)
+        val_acc = np.zeros(epochs)
+        val_loss = np.zeros(epochs)
+        time = np.zeros(epochs)
 
+        best_acc = 0
         ### YOUR CODE HERE
+        for epoch in range(epochs):
+            t0 = dt()
+            random_indices = np.random.permutation(X_train.shape[0])
+            X, y = X_train[random_indices], y_train[random_indices]
+            for i in range(X.shape[0]//batch_size):
+                C, d = self.cost_grad(X[i*batch_size:(i+1)*batch_size], y[i*batch_size:(i+1)*batch_size], params, reg)
+                for key1, key2 in zip(['W1', 'W2', 'b1', 'b2'], ['d_w1', 'd_w2', 'd_b1', 'd_b2']):
+                    params[key1] -= lr/batch_size*d[key2]
+            train_acc[epoch] = self.score(X_train, y_train, params)
+            train_loss[epoch] = C
+            val_acc[epoch] = self.score(X_val, y_val, params)
+            valC, _ = self.cost_grad(X_val, y_val, params)
+            val_loss[epoch] = valC
+
+            if val_acc[epoch] > best_acc:
+                best_params = params.copy()
+                best_epoch = epoch
+                best_acc = val_acc[epoch]
+
+            time[epoch] = dt() - t0
+                
+            print('============== Epoch {} ============='.format(epoch))
+            print('Train accuracy: {}'.format(train_acc[epoch]))
+            print('Train cost: {}'.format(train_loss[epoch]))
+            print('Validation accuracy {}'.format(val_acc[epoch]))
+            print('Validation cost: {}'.format(val_loss[epoch]))
+            print('Time for epoch: {}'.format(time[epoch]))
+            
+        print('=============== Finished =============')
+        print('Best validation accuracy {} (Epoch {})'.format(best_acc, best_epoch))
+
+            
         ### END CODE
         # hist dict should look like this with something different than none
         self.history = {
-            'train_loss': None,
-            'train_acc': None,
-            'val_loss': None,
-            'val_acc': None, 
+            'train_loss': train_loss,
+            'train_acc': train_acc,
+            'val_loss': val_loss,
+            'val_acc': val_acc, 
         }
         ## self.params should look like this with something better than none, i.e. the best parameters found.
-        self.params = {'W1': None, 'b1': None, 'W2': None, 'b2': None}
+        self.params = params
     
         
 
