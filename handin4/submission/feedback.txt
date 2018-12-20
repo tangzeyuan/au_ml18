@@ -1,0 +1,8 @@
+Feedback to Learner
+11/12/18 12:39
+It is great that you visualize the clusterings that you get as part of your comparison, 
+given that we are in 2-D anyways.
+
+Overall, your descriptions are clear, and your implementations looks correct.
+
+Accepted - and best of luck for the exam!
