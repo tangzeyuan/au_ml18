@@ -1,0 +1,11 @@
+Feedback to Learner
+27/11/18 17:52
+
+You have done as the handin requested, and little more. 
+You have chosen a simple model to implement, 
+but you still get decent results in the end. 
+You do not have a lot of detail describing your implementation process, 
+it would be nice if you wrote a bit more here. 
+Your illustration of your model is quite good.
+
+Accepted!
