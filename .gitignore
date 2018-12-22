@@ -4,3 +4,4 @@ myfile.npz
 .vscode
 *.gzip
 .DS_Store
+*ubyte
