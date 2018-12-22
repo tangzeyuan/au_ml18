@@ -8,7 +8,7 @@ def get_neighbors(data, p, eps=1.5):
             if not np.array_equal(x, p):
                 neighbors.append(x)
     return neighbors
-
+ 
 def assign_labels(data, labels, p, k, eps, minPts):
     p_neighbors = get_neighbors(data, p, eps)
     i = 0
