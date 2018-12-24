@@ -38,6 +38,9 @@ def standardize_strings(string_list):
     res = []
     
     ### YOUR CODE 1-3 lines
+    regex = re.compile('[^a-zA-Z^\s]')
+    for s in string_list:
+        res.append(regex.sub('', s.lower()))
     ### END CODE
     
     assert len(string_list) == len(res)
@@ -74,6 +77,7 @@ def split_strings(strings):
     word_lists = []
     
     ### YOUR CODE 
+    word_lists = [s.split() for s in strings]
     ### END CODE
     
     assert len(word_lists) == len(strings)
@@ -100,6 +104,8 @@ def remove_irrelevant_words(word_lists, bad_words=set()):
     pruned_word_lists = []
     
     ### YOUR CODE, 1-3 lines
+    for words in word_lists:
+        pruned_word_lists.append([w for w in words if w not in bad_words])
     ### END CODE
     
     assert len(pruned_word_lists) == len(word_lists)
@@ -204,6 +210,10 @@ class TextClassifier():
         self.index_to_word = dict()
         
         ### YOUR CODE 3-4 lines
+        s = [w for words in word_lists for w in words]
+        self.vocabulary = set(s)
+        self.word_to_index = {v: list(sorted(self.vocabulary)).index(v) for v in sorted(self.vocabulary)}
+        self.index_to_word = {list(sorted(self.vocabulary)).index(v): v for v in sorted(self.vocabulary)}
         ### END CODE
         
         assert len(self.word_to_index) == len(self.index_to_word)
@@ -242,6 +252,10 @@ class TextClassifier():
         word_vectors = np.zeros((len(word_lists), len(vocabulary)))
         
         ### YOUR CODE
+        vocabulary = sorted(vocabulary)
+        for i, words in enumerate(word_lists):
+            for j, v in enumerate(vocabulary):
+                word_vectors[i, j] = words.count(v)
         ### END CODE
         
         return word_vectors
@@ -277,8 +291,22 @@ class TextClassifier():
         prior = np.zeros(self.num_classes)
         
         ### YOUR CODE 6-10 lines
+        #print(n_input)
+        #print(self.word_to_index)
+        #print(vectors)
+        #print(class_probs)
+        #print(self.labels)
+        for c in range(self.num_classes):
+            prior[c] = np.count_nonzero(self.labels == c) / len(self.labels)
+        for i in range(class_probs.shape[0]): # n_classes
+            total_words = np.sum(vectors[np.where(self.labels == i)])
+            #print('Total: {}'.format(total_words))
+            #print(vectors[np.where(self.labels == i)])
+            for j in range(class_probs.shape[1]): # n_word
+                occurences = np.sum(vectors[np.where(self.labels == i)], axis=0)[j]
+                #print(occurences)
+                class_probs[i, j] = (1 + occurences) / (n_input + total_words)
         ### END CODE
-        
         return class_probs, prior
 
     def data_clean(self, strings, stopwords = set()):
@@ -344,9 +372,18 @@ class TextClassifier():
             return
         res = np.zeros(len(strings))
         cleaned_strings = self.data_clean(strings)
+        #print(cleaned_strings)
         for i, c in enumerate(cleaned_strings):            
             res[i] = 0 # dummy line you can remove when done , one line is needed 
             ### YOUR CODE  5-10 lines
+            log_p = []
+            for n in range(self.num_classes):
+                log_p_item = np.log(self.prior[n]) + np.sum([np.log(self.class_probabilities[n, self.word_to_index[word]]) for word in c if word in self.vocabulary])
+                log_p.append(log_p_item)
+            res[i] = np.argmax(log_p)
+            #print(c)
+            #print(log_p)
+            #print(np.argmax(log_p))
             ### END CODE
             
             

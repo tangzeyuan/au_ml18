@@ -1,0 +1,100 @@
+[xxx@xxx:~/Github/au_ml18/week1]$ python code_text_classification.py -run
+Run on full data
+Load data
+(7214,)
+split data statistics:
+train data class 0: 46.173752310536045
+train data class 1: 53.826247689463955
+test data class 0: 46.674057649667404
+test data class 1: 53.32594235033259
+Train Classifier
+See Stats
+Class 0 - most probable words
+********************
+1: Word: forml Probability 0.115754742919989
+2: Word: drive Probability 0.08903858491430666
+3: Word: restaurationsvirksomhed Probability 0.05017871872422326
+4: Word: beslgtet Probability 0.04784162771514985
+5: Word: hermed Probability 0.03656860049491339
+6: Word: dermed Probability 0.03134451470992576
+7: Word: restaurant Probability 0.014939052332508477
+8: Word: forbindelse Probability 0.014709925762991476
+9: Word: virksomhedens Probability 0.012647786637338466
+10: Word: skn Probability 0.01182293098707726
+11: Word: stende Probability 0.010677298139492256
+12: Word: restauration Probability 0.010402346256071855
+13: Word: handel Probability 0.010310695628265053
+14: Word: drift Probability 0.00957749060581065
+15: Word: aktiviteter Probability 0.00930253872239025
+16: Word: enhver Probability 0.009119237466776647
+17: Word: direktionens Probability 0.008890110897259646
+18: Word: restaurationsdrift Probability 0.0071945742828338375
+19: Word: restaurations Probability 0.005957290807442031
+20: Word: hertil Probability 0.005544862982311429
+********************
+Class 1 - most probable words
+********************
+1: Word: forml Probability 0.08976804282286348
+2: Word: drive Probability 0.04048483356918723
+3: Word: hermed Probability 0.029779117701347443
+4: Word: udvikling Probability 0.027748723312619208
+5: Word: beslgtet Probability 0.026702762566910725
+6: Word: software Probability 0.022857318648864824
+7: Word: salg Probability 0.017627514920322402
+8: Word: dermed Probability 0.01667384482864702
+9: Word: udvikle Probability 0.015720174736971636
+10: Word: forbindelse Probability 0.015627884082938536
+11: Word: handel Probability 0.015412539223527965
+12: Word: skn Probability 0.01116716913800529
+13: Word: it Probability 0.010244262597674275
+14: Word: stende Probability 0.009352119608687627
+15: Word: indenfor Probability 0.009259828954654525
+16: Word: virksomhedens Probability 0.008613794376422814
+17: Word: konsulentvirksomhed Probability 0.007844705592813634
+18: Word: aktiviteter Probability 0.007598597182058697
+19: Word: enhver Probability 0.00756783363071433
+20: Word: slge Probability 0.007167907463237556
+********************
+Predict on test set
+Accuracy of the classifier: 95.1219512195122 %
+First 1000 mispredictions
+********************
+String: Selskabets formål er selv og igennem datterselskaber at drive handel, investerings- og finansieringsvirksomhed samt anden virksomhed, der har naturlig sammenhæng med de angivne formål.
+Predicted Class: 1 - Computerprogrammering
+Actual Class: 0.0 - Restauranter
+********************
+String: Selskabets formål er at drive virksomhed som betalingsinstitut i overensstemmelse med Selskabets tilladelse fra Finanstilsynet.
+Predicted Class: 0 - Restauranter
+Actual Class: 1.0 - Computerprogrammering
+********************
+String: Selskabets formål er at drive handel.
+Predicted Class: 0 - Restauranter
+Actual Class: 1.0 - Computerprogrammering
+********************
+String: Selskabets formål er at drive reaturant til såvel interne og eksterne kunder til diverse arragementer
+Predicted Class: 1 - Computerprogrammering
+Actual Class: 0.0 - Restauranter
+********************
+String: Selskabets formål er at drive handel og industri og anden hermed forbunden virksomhed.
+Predicted Class: 0 - Restauranter
+Actual Class: 1.0 - Computerprogrammering
+********************
+String: Selskabets formål er at drive holding og investeringsvirksomhed.
+Predicted Class: 0 - Restauranter
+Actual Class: 1.0 - Computerprogrammering
+********************
+String: Selskabets formål er formueadministration.
+Predicted Class: 0 - Restauranter
+Actual Class: 1.0 - Computerprogrammering
+********************
+String: Selskabets formål er konsulent- og investeringsvirksomhed og anden i forbindelse dermed stående virksomhed.
+Predicted Class: 1 - Computerprogrammering
+Actual Class: 0.0 - Restauranter
+********************
+String: Selskabets formål er - direkte eller via besiddelse af kapitalandele i andre selskaber - at drive investeringsvirksomhed samt anden virksomhed, der efter det centrale ledelsesorgans skøn er forbundet.
+Predicted Class: 1 - Computerprogrammering
+Actual Class: 0.0 - Restauranter
+********************
+String: Selskabets formål er investeringsvirksomhed og dermed beslægtet virksomhed
+Predicted Class: 0 - Restauranter
+Actual Class: 1.0 - Computerprogrammering
